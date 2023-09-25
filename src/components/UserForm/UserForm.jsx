@@ -31,23 +31,23 @@ const UserForm = () => {
 
   const handleSave = (values) => {
     setIsModalVisible(false);
-    console.log("values............", values);
-  
-    if (editingIndex !== null) {
-      const updatedData = [...dataSource];
-      const editedItemIndex = updatedData.findIndex(
-        (item) => item.id === editingIndex
-      );
-      if (editedItemIndex !== -1) {
-        updatedData[editedItemIndex] = values;
-        setDataSource(updatedData);
-        setEditingIndex(null);
-      }
-    } else {
+    console.log("values==>>>>", values);
+
+    if (editingIndex === null) {
       setDataSource([...dataSource, values]);
       setEditingIndex(null);
+      return;
     }
+    const updatedData = [...dataSource];
+    const editedItemIndex = updatedData.findIndex(
+      (item) => item.id !== editingIndex
+    );
+    if (editedItemIndex === -1) return;
+    updatedData[editedItemIndex] = values;
+    setDataSource(updatedData);
+    setEditingIndex(null);
   };
+
   const handleDelete = (index) => {
     const updatedData = [...dataSource];
     updatedData.splice(index, 1);
@@ -118,8 +118,7 @@ const UserForm = () => {
           }
           validationSchema={validationSchema}
           enableReinitialize
-          onSubmit={(values, {setSubmitting}) => {
-            console.log("values....", values);
+          onSubmit={(values, { setSubmitting }) => {
             handleSave(values);
             setSubmitting(false);
           }}
